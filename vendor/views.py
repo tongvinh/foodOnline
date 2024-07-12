@@ -1,5 +1,34 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render, get_object_or_404
+
+from account.models import UserProfile
+from vendor.models import Vendor
+from .forms import VendorForm
+from account.forms import UserProfileForm
+from django.contrib import messages
 
 # Create your views here.
 def vprofile(request):
-    return render(request, 'vendor/vprofile.html')
+    profile = get_object_or_404(UserProfile, user = request.user)
+    vendor = get_object_or_404(Vendor, user = request.user)
+    
+    if request.method == 'POST':
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        vendor_form = VendorForm(request.POST, request.FILES, instance=vendor)
+        if profile_form.is_valid() and vendor_form.is_valid():
+            profile_form.save()
+            vendor_form.save()
+            messages.success(request, 'Setting updated')
+            return redirect('vprofile')
+        else:
+            print(profile_form.errors)
+            print(vendor_form.errors)
+    else:
+        profile_form = UserProfileForm(instance=profile)
+        vendor_form = VendorForm(instance=vendor)
+    context = {
+        'profile_form': profile_form,
+        'vendor_form': vendor_form,
+        'profile': profile,
+        'vendor': vendor
+    }
+    return render(request, 'vendor/vprofile.html', context)
