@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'account.context_processors.get_vendor',
+                'account.context_processors.get_google_api',
             ],
         },
     },
@@ -152,5 +153,7 @@ EMAIL_POST = config('EMAIL_POST', cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'foodOnline Marketplace <vinhtq.dev@gmail.com> '
+DEFAULT_FROM_EMAIL = 'foodOnline Marketplace <vinhtq.dev@gmail.com>'
+
+GOOGLE_API_KEY = 'AIzaSyALPT8zMUZAeBmS-5m_WzibrW2nzCW_AQg'
 
