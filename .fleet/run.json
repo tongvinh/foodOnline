@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "django",
+            "name": "Django configuration",
+            "command": "runserver",
+            "manageFilePath": "D:/Project/Python/FoodOnline/manage.py",
+        },
+        
+    ]
+}
