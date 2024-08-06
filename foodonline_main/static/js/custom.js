@@ -78,7 +78,7 @@ $(document).ready(function (){
             url: url,
             data: data,
             success: function (response) {
-                alert(response);
+                console.log(response);
             }
         });
     })
