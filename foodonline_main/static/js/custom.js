@@ -82,4 +82,11 @@ $(document).ready(function (){
             }
         });
     })
+
+    // place the cart item quantity on load
+    $('.item-qty').each(function() {
+        let the_id = $(this).attr('id')
+        let qty = $(this).attr('data-qty')
+        $('#'+the_id).html(qty)
+    });
 });
