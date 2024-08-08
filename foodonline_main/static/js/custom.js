@@ -106,6 +106,7 @@ $(document).ready(function () {
 
 		food_id = $(this).attr("data-id");
 		url = $(this).attr("data-url");
+        cart_id = $(this).attr('id');
 		$.ajax({
 			type: "GET",
 			url: url,
@@ -122,6 +123,10 @@ $(document).ready(function () {
 						response.cart_counter["cart_count"]
 					);
 					$("#qty-" + food_id).html(response.qty);
+                    if (window.location.pathname == '/cart/') {
+                        removeCartItem(response.qty, cart_id);
+                        checkEmptyCart();
+                    }
 				}
 			},
 		});
@@ -154,11 +159,11 @@ $(document).ready(function () {
 	});
 
     // delete the cart element if the qty is 0
-    function removeCartItem(cartItemQty, cart_id){
-        if (cartItemQty <= 0) {
-            // remove the cart item element
-            document.getElementById("cart-item-"+cart_id).remove();
-        }
+    function removeCartItem(cartItemQty, cart_id){   
+            if (cartItemQty <= 0) {
+                // remove the cart item element
+                document.getElementById("cart-item-"+cart_id).remove();
+            }
     }
 
     function checkEmptyCart(){
