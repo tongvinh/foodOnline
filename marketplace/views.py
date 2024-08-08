@@ -93,7 +93,7 @@ def cart(request):
     context = {
         'cart_items': cart_items,
     }
-    return render(request, 'marketplace/cart.html')
+    return render(request, 'marketplace/cart.html', context=context)
 
 def delete_cart(request, cart_id):
     if request.user.is_authenticated:
