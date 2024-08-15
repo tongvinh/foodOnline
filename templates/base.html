@@ -27,7 +27,7 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <link rel="stylesheet" href="{% static 'css/custom.css' %}">
-    {% if '/profile/' in request.path %}
+    {% if '/' in request.path or 'profile' in request.path %}
     <script src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_API_KEY}}&libraries=places&callback=initAutoComplete"  defer></script>
     {% endif %} 
     <script src="{% static 'js/custom.js' %}"></script>

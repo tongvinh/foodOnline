@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 
 from account.models import UserProfile
@@ -185,3 +186,9 @@ def opening_hours(request):
         'opening_hours': opening_hours,
     }
     return render(request, 'vendor/opening_hours.html', context=context)
+
+
+@login_required(login_url='login')
+@user_passes_test(check_role_vendor)
+def add_opening_hours(request):
+    return HttpResponse('Add opening hour')
