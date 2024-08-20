@@ -20,7 +20,7 @@
 
                                     <div id="menu-item-list-6272" class="menu-itam-list">
                                         
-                                        <form action="" method="post">
+                                        <form action="{% url "place_order" %}" method="post">
                                             {% csrf_token %}
                                             <div class="row">
                                                 <div class="form-group col-md-6 col-sm-12 col-lg-6">
@@ -59,7 +59,7 @@
                                                     Pin Code: {{form.pin_code}}
                                                 </div>
                                             </div>
-                                        </form>
+                                        
                                     
                                     </div>
                             
@@ -149,7 +149,7 @@
                                         <!--select payment method-->
                                         <button onclick="return payMethodConfirm();" type="submit" class="btn btn-danger w-100 p-2 mt-3">PLACE ORDER</button>
                                     </ul>
-
+                                    </form>
                                     <!--end the form-->
                                 </div>
 
