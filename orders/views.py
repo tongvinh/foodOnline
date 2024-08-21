@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from marketplace.models import Cart
 from marketplace.context_processors import get_cart_amounts
 from orders.forms import OrderForm
-from orders.models import Order, Payment
+from orders.models import Order, OrderedFood, Payment
 from .utils import generate_order_number
 
 def place_order(request):
@@ -54,14 +54,14 @@ def payments(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == "POST":
         # STORE THE PAYMENT DETAILS IN THE PAYMNET MODEL
         order_number = request.POST.get('order_number')
-        tracsaction_id = request.POST.get('transaction_id')
+        transaction_id = request.POST.get('transaction_id')
         payment_method = request.POST.get('payment_method')
         status = request.POST.get('status')
         
         order = Order.objects.get(user=request.user, order_number=order_number)
         payment = Payment(
             user = request.user,
-            tracsaction_id =tracsaction_id,
+            transaction_id =transaction_id,
             payment_method = payment_method,
             amount = order.total,
             status = status,
@@ -72,9 +72,21 @@ def payments(request):
         order.payment = payment
         order.is_ordered = True
         order.save()
-        return HttpResponse('Saved!')
     
         # MOVE THE CART ITEMS TO ORDERED FOOD MODEL
+        cart_items = Cart.objects.filter(user=request.user)
+        for item in cart_items:
+            ordered_food = OrderedFood()
+            ordered_food.order = order
+            ordered_food.payment = payment
+            ordered_food.user = request.user
+            ordered_food.fooditem = item.fooditem
+            ordered_food.quantity = item.quantity
+            ordered_food.price = item.fooditem.price
+            ordered_food.amount = item.fooditem.price * item.quantity # total amount
+            ordered_food.save()
+            
+        return HttpResponse('Saved ordered food')
         
         # SEND ORDER CONFIRMATION EMAIL TO THE CUSTOMER
         
