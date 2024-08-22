@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import simplejson as json
 from django.shortcuts import redirect, render
 from marketplace.models import Cart
@@ -113,8 +113,36 @@ def payments(request):
         send_notification(mail_subject, mail_template, context)
         
         # CLEAR THE CART IF THE PAYMNET IS SUCCESS
-        cart_items.delelte()
+        # cart_items.delelte()
         
         # RETURN BACK TO AJAX WITH THE STATUS SUCCESS OR FAILURE
-        return HttpResponse('Success')
+        response = {
+            'order_number': order_number,
+            'transaction_id': transaction_id
+        }
+        return JsonResponse(response)
     return HttpResponse('Payment view')
+
+def order_complete(request):
+    order_number = request.GET.get('order_no')
+    transaction_id = request.GET.get('trans_id')
+    
+    try:
+        print('vào')
+        order = Order.objects.get(order_number=order_number, payment__transaction_id=transaction_id, is_ordered=True)
+        ordered_food = OrderedFood.objects.filter(order=order)
+        subtotal = 0
+        for item in ordered_food:
+            subtotal += (item.price * item.quantity)
+            
+        tax_data = json.loads(order.tax_data)
+        context = {
+            'order': order,
+            'order_food': ordered_food,
+            'subtotal': subtotal,
+            'tax_data': tax_data,
+        }
+        return render(request, 'orders/order_complete.html', context)
+    except:
+        return redirect('home')
+    
