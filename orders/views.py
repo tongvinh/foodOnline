@@ -6,7 +6,7 @@ from marketplace.context_processors import get_cart_amounts
 from menu.models import FoodItem
 from orders.forms import OrderForm
 from orders.models import Order, OrderedFood, Payment
-from .utils import generate_order_number
+from .utils import generate_order_number, order_total_by_vendor
 from account.utils import send_notification
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
@@ -150,11 +150,18 @@ def payments(request):
         for i in cart_items:
             if i.fooditem.vendor.user.email not in to_emails:
                 to_emails.append(i.fooditem.vendor.user.email)
-        context = {
-            'order': order,
-            'to_email': to_emails
-        }
-        send_notification(mail_subject, mail_template, context)
+                
+                ordered_food_to_vendor = OrderedFood.objects.filter(order=order, fooditem__vendor=i.fooditem.vendor)
+                
+                context = {
+                    'order': order,
+                    'to_email': i.fooditem.vendor.user.email,
+                    'ordered_food_to_vendor': ordered_food_to_vendor,
+                    'vendor_subtotal': order_total_by_vendor(order, i.fooditem.vendor.id)['subtotal'],
+                    'tax_data': order_total_by_vendor(order, i.fooditem.vendor.id)['tax_dict'],
+                    'vendor_grand_total': order_total_by_vendor(order, i.fooditem.vendor.id)['grand_total'],
+                }
+                send_notification(mail_subject, mail_template, context)
         
         # CLEAR THE CART IF THE PAYMNET IS SUCCESS
         # cart_items.delelte()
